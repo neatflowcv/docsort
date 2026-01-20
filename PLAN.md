@@ -3,10 +3,11 @@
 ## Phase 1: 프로젝트 기반 구축
 
 ### 1.1 Go 모듈 초기화
+
 - [ ] `go mod init` 실행
 - [ ] 프로젝트 디렉토리 구조 설계
 
-```
+```text
 docsort/
 ├── cmd/
 │   └── docsort/
@@ -24,6 +25,7 @@ docsort/
 ```
 
 ### 1.2 설정 파일 구현
+
 - [ ] `.docsort.yaml` 스키마 정의
 - [ ] 설정 로드/저장 기능 구현
 - [ ] 기본값 설정
@@ -53,6 +55,7 @@ clustering:
 ## Phase 2: CLI 스켈레톤
 
 ### 2.1 CLI 프레임워크 설정
+
 - [ ] CLI 라이브러리 선택 (cobra 권장)
 - [ ] 루트 커맨드 생성
 - [ ] 서브커맨드 스켈레톤 생성
@@ -61,6 +64,7 @@ clustering:
   - [ ] `add`
 
 ### 2.2 플래그 정의
+
 - [ ] `organize --fresh` / `--preserve`
 - [ ] `organize --dry-run`
 - [ ] `add --dry-run`
@@ -71,16 +75,19 @@ clustering:
 ## Phase 3: 파일 처리 기능
 
 ### 3.1 파일 스캐너
+
 - [ ] 디렉토리 재귀 탐색
 - [ ] Markdown 파일 필터링 (`.md` 확장자)
 - [ ] 파일 메타데이터 수집 (경로, 이름, 크기)
 
 ### 3.2 파일 내용 처리
+
 - [ ] Markdown 파일 읽기
 - [ ] 제목/헤더 추출
 - [ ] 본문 텍스트 추출
 
 ### 3.3 파일 이동
+
 - [ ] 디렉토리 생성
 - [ ] 파일 이동/복사
 - [ ] dry-run 모드 (실제 이동 없이 계획만 출력)
@@ -90,7 +97,9 @@ clustering:
 ## Phase 4: 임베딩 시스템
 
 ### 4.1 임베딩 인터페이스 정의
+
 - [ ] `Embedder` 인터페이스 설계
+
 ```go
 type Embedder interface {
     Embed(text string) ([]float64, error)
@@ -99,11 +108,13 @@ type Embedder interface {
 ```
 
 ### 4.2 로컬 임베딩 구현
+
 - [ ] ONNX 런타임 연동 또는 순수 Go 라이브러리 조사
 - [ ] 한국어 지원 모델 선택
 - [ ] CPU 최적화
 
 ### 4.3 외부 API 임베딩 구현
+
 - [ ] OpenAI Embedding API 연동
 - [ ] 배치 처리 (비용 최적화)
 - [ ] 에러 핸들링 및 재시도
@@ -113,15 +124,18 @@ type Embedder interface {
 ## Phase 5: 군집화 시스템
 
 ### 5.1 벡터 연산
+
 - [ ] 코사인 유사도 계산
 - [ ] 유사도 행렬 생성
 
 ### 5.2 클러스터링 알고리즘
+
 - [ ] 계층적 클러스터링 (Hierarchical Clustering) 구현
 - [ ] 클러스터 수 자동 결정 (실루엣 스코어 등)
 - [ ] 계층 깊이 제한
 
 ### 5.3 계층 구조 생성
+
 - [ ] 클러스터 → 폴더 구조 변환
 - [ ] 중첩 클러스터 처리
 
@@ -130,7 +144,9 @@ type Embedder interface {
 ## Phase 6: LLM 연동
 
 ### 6.1 LLM 인터페이스 정의
+
 - [ ] `LLM` 인터페이스 설계
+
 ```go
 type LLM interface {
     GenerateFolderName(documents []Document, glossary []string) (string, error)
@@ -138,11 +154,13 @@ type LLM interface {
 ```
 
 ### 6.2 LLM 프로바이더 구현
+
 - [ ] OpenAI API 연동
 - [ ] 프롬프트 템플릿 설계
 - [ ] 용어집 참조 로직
 
 ### 6.3 폴더 이름 생성
+
 - [ ] 클러스터 대표 문서 선택
 - [ ] 계층별 이름 생성
 - [ ] 용어집 기반 이름 정규화
@@ -152,6 +170,7 @@ type LLM interface {
 ## Phase 7: 핵심 커맨드 구현
 
 ### 7.1 `init` 커맨드
+
 - [ ] 기존 문서 스캔
 - [ ] 클러스터링 실행
 - [ ] LLM으로 용어집 초안 생성
@@ -159,6 +178,7 @@ type LLM interface {
 - [ ] 사용자 편집 안내
 
 ### 7.2 `organize` 커맨드
+
 - [ ] 전체 파일 스캔
 - [ ] 임베딩 생성
 - [ ] 클러스터링
@@ -169,6 +189,7 @@ type LLM interface {
 - [ ] 실제 파일 이동
 
 ### 7.3 `add` 커맨드
+
 - [ ] 단일 파일 임베딩
 - [ ] 기존 클러스터와 유사도 비교
 - [ ] 최적 위치 결정
@@ -180,6 +201,7 @@ type LLM interface {
 ## Phase 8: 테스트
 
 ### 8.1 단위 테스트
+
 - [ ] 설정 파일 로드/저장
 - [ ] 파일 스캐너
 - [ ] 임베딩 (모킹)
@@ -187,6 +209,7 @@ type LLM interface {
 - [ ] 파일 이동
 
 ### 8.2 통합 테스트
+
 - [ ] 전체 파이프라인 테스트
 - [ ] dry-run 모드 검증
 - [ ] 대용량 파일 테스트 (2000개)
@@ -196,11 +219,13 @@ type LLM interface {
 ## Phase 9: 마무리
 
 ### 9.1 최적화
+
 - [ ] 임베딩 캐싱 (파일 해시 기반)
 - [ ] 병렬 처리
 - [ ] 메모리 사용량 최적화
 
 ### 9.2 사용자 경험
+
 - [ ] 진행률 표시
 - [ ] 에러 메시지 개선
 - [ ] 도움말 문서
@@ -209,7 +234,7 @@ type LLM interface {
 
 ## 구현 우선순위
 
-```
+```text
 높음 ████████████████████
      Phase 1 → Phase 2 → Phase 3
 
@@ -238,7 +263,7 @@ type LLM interface {
 
 ## 예상 의존성 (Go 패키지)
 
-```
+```text
 github.com/spf13/cobra      # CLI 프레임워크
 github.com/spf13/viper      # 설정 파일 관리
 github.com/sashabaranov/go-openai  # OpenAI API
@@ -249,10 +274,10 @@ gonum.org/v1/gonum          # 수학/통계 연산
 
 ## 마일스톤
 
-| 마일스톤 | 포함 Phase | 결과물 |
-|---------|-----------|--------|
-| M1: 기본 동작 | 1, 2, 3 | 파일 스캔 및 이동 가능 |
-| M2: 자동 분류 | 4, 5 | 임베딩 + 군집화 동작 |
-| M3: MVP | 7 (organize) | `organize --dry-run` 동작 |
-| M4: 완성 | 6, 7, 8 | 전체 기능 완성 |
-| M5: 안정화 | 9 | 최적화 및 문서화 |
+| 마일스톤      | 포함 Phase   | 결과물                    |
+| ------------- | ------------ | ------------------------- |
+| M1: 기본 동작 | 1, 2, 3      | 파일 스캔 및 이동 가능    |
+| M2: 자동 분류 | 4, 5         | 임베딩 + 군집화 동작      |
+| M3: MVP       | 7 (organize) | `organize --dry-run` 동작 |
+| M4: 완성      | 6, 7, 8      | 전체 기능 완성            |
+| M5: 안정화    | 9            | 최적화 및 문서화          |
