@@ -27,7 +27,7 @@ docsort/
 ### 1.2 설정 파일 구현
 
 - [ ] `.docsort.yaml` 스키마 정의
-- [ ] 설정 로드/저장 기능 구현
+- [ ] 설정 로드/저장 기능 구현 (goccy/go-yaml 사용)
 - [ ] 기본값 설정
 
 ```yaml
@@ -56,12 +56,24 @@ clustering:
 
 ### 2.1 CLI 프레임워크 설정
 
-- [ ] CLI 라이브러리 선택 (cobra 권장)
-- [ ] 루트 커맨드 생성
+- [ ] kong 라이브러리 설정 (구조체 태그 기반)
+- [ ] CLI 구조체 정의
 - [ ] 서브커맨드 스켈레톤 생성
   - [ ] `init`
   - [ ] `organize`
   - [ ] `add`
+
+```go
+// CLI 구조체 예시
+type CLI struct {
+    Init     InitCmd     `cmd:"" help:"용어집 생성"`
+    Organize OrganizeCmd `cmd:"" help:"전체 문서 정리"`
+    Add      AddCmd      `cmd:"" help:"새 파일 추가"`
+
+    Config  string `short:"c" help:"설정 파일 경로" default:".docsort.yaml"`
+    Verbose bool   `short:"v" help:"상세 출력"`
+}
+```
 
 ### 2.2 플래그 정의
 
@@ -107,15 +119,15 @@ type Embedder interface {
 }
 ```
 
-### 4.2 로컬 임베딩 구현
+### 4.2 로컬 임베딩 구현 (ollama)
 
-- [ ] ONNX 런타임 연동 또는 순수 Go 라이브러리 조사
-- [ ] 한국어 지원 모델 선택
-- [ ] CPU 최적화
+- [ ] ollama HTTP API 클라이언트 구현
+- [ ] 한국어 지원 모델 선택 (nomic-embed 등)
+- [ ] 배치 처리
 
 ### 4.3 외부 API 임베딩 구현
 
-- [ ] OpenAI Embedding API 연동
+- [ ] OpenAI Embedding API 연동 (go-openai 사용)
 - [ ] 배치 처리 (비용 최적화)
 - [ ] 에러 핸들링 및 재시도
 
@@ -128,7 +140,7 @@ type Embedder interface {
 - [ ] 코사인 유사도 계산
 - [ ] 유사도 행렬 생성
 
-### 5.2 클러스터링 알고리즘
+### 5.2 클러스터링 알고리즘 (직접 구현)
 
 - [ ] 계층적 클러스터링 (Hierarchical Clustering) 구현
 - [ ] 클러스터 수 자동 결정 (실루엣 스코어 등)
@@ -155,7 +167,7 @@ type LLM interface {
 
 ### 6.2 LLM 프로바이더 구현
 
-- [ ] OpenAI API 연동
+- [ ] OpenAI API 연동 (go-openai 사용)
 - [ ] 프롬프트 템플릿 설계
 - [ ] 용어집 참조 로직
 
@@ -226,7 +238,7 @@ type LLM interface {
 
 ### 9.2 사용자 경험
 
-- [ ] 진행률 표시
+- [ ] 진행률 표시 (progressbar 사용)
 - [ ] 에러 메시지 개선
 - [ ] 도움말 문서
 
@@ -255,19 +267,31 @@ type LLM interface {
 6. **Phase 7**: 커맨드 구현 - `organize` 먼저
 7. **Phase 6**: LLM 연동 (폴더 이름 생성)
 8. **Phase 7**: 나머지 커맨드 (`init`, `add`)
-9. **Phase 4**: 로컬 임베딩 추가
+9. **Phase 4**: 로컬 임베딩 추가 (ollama)
 10. **Phase 8**: 테스트
 11. **Phase 9**: 마무리
 
 ---
 
-## 예상 의존성 (Go 패키지)
+## 선택된 의존성 (Go 패키지)
 
-```text
-github.com/spf13/cobra      # CLI 프레임워크
-github.com/spf13/viper      # 설정 파일 관리
-github.com/sashabaranov/go-openai  # OpenAI API
-gonum.org/v1/gonum          # 수학/통계 연산
+| 영역 | 패키지 |
+|------|--------|
+| CLI | https://github.com/alecthomas/kong |
+| YAML | https://github.com/goccy/go-yaml |
+| LLM/임베딩 API | https://github.com/sashabaranov/go-openai |
+| 수학 연산 | https://github.com/gonum/gonum |
+| 진행률 | https://github.com/schollz/progressbar |
+
+```go
+// go.mod 예상
+require (
+    github.com/alecthomas/kong v0.9.0
+    github.com/goccy/go-yaml v1.15.0
+    github.com/sashabaranov/go-openai v1.24.0
+    gonum.org/v1/gonum v0.15.0
+    github.com/schollz/progressbar/v3 v3.14.0
+)
 ```
 
 ---
