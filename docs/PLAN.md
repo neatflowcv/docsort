@@ -276,12 +276,12 @@ type LLM interface {
 ## 선택된 의존성 (Go 패키지)
 
 | 영역 | 패키지 |
-|------|--------|
-| CLI | https://github.com/alecthomas/kong |
-| YAML | https://github.com/goccy/go-yaml |
-| LLM/임베딩 API | https://github.com/sashabaranov/go-openai |
-| 수학 연산 | https://github.com/gonum/gonum |
-| 진행률 | https://github.com/schollz/progressbar |
+| ------ | -------- |
+| CLI | <https://github.com/alecthomas/kong> |
+| YAML | <https://github.com/goccy/go-yaml> |
+| LLM/임베딩 API | <https://github.com/sashabaranov/go-openai> |
+| 수학 연산 | <https://github.com/gonum/gonum> |
+| 진행률 | <https://github.com/schollz/progressbar> |
 
 ```go
 // go.mod 예상
