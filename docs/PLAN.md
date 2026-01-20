@@ -5,24 +5,52 @@
 ### 1.1 Go 모듈 초기화
 
 - [x] `go mod init` 실행
-- [ ] 프로젝트 디렉토리 구조 설계
+- [x] 프로젝트 디렉토리 구조 설계
 
 ```text
 docsort/
 ├── cmd/
 │   └── docsort/
-│       └── main.go
+│       └── main.go           # 진입점, DI 구성
 ├── internal/
-│   ├── config/       # 설정 파일 처리
-│   ├── embedding/    # 임베딩 모델
-│   ├── clustering/   # 군집화 로직
-│   ├── llm/          # LLM 연동
-│   ├── organizer/    # 파일 정리 로직
-│   └── glossary/     # 용어집 관리
+│   ├── domain/               # 핵심 타입 정의 (의존성 없음)
+│   │   ├── document.go       # Document 엔티티
+│   │   ├── cluster.go        # Cluster 엔티티
+│   │   └── glossary.go       # Glossary 엔티티
+│   ├── usecase/              # 비즈니스 로직 (domain만 의존)
+│   │   ├── organize.go       # 전체 문서 정리
+│   │   ├── add.go            # 새 파일 추가
+│   │   └── init.go           # 용어집 초기화
+│   ├── infra/                # 외부 시스템 연동 (domain 의존)
+│   │   ├── embedding/
+│   │   │   ├── openai.go     # OpenAI 임베딩
+│   │   │   └── ollama.go     # Ollama 로컬 임베딩
+│   │   ├── llm/
+│   │   │   └── openai.go     # OpenAI LLM
+│   │   ├── filesystem/       # 파일 스캔, 읽기, 이동
+│   │   └── config/           # 설정 파일 로드/저장
+│   └── cli/                  # CLI 어댑터 (usecase 의존)
+│       ├── root.go           # kong CLI 구조체
+│       ├── init.go           # init 커맨드
+│       ├── organize.go       # organize 커맨드
+│       └── add.go            # add 커맨드
 ├── .docsort.yaml
 ├── go.mod
 └── go.sum
 ```
+
+### 계층 간 의존성 규칙
+
+```text
+cli → usecase → domain
+         ↓
+       infra → domain
+```
+
+- **domain**: 외부 의존성 없음. 순수 Go 타입과 인터페이스만 정의
+- **usecase**: domain의 인터페이스를 사용. infra 구현체는 주입받음
+- **infra**: domain 인터페이스를 구현. 외부 라이브러리 사용
+- **cli**: usecase를 호출. kong 라이브러리 사용
 
 ### 1.2 설정 파일 구현
 
