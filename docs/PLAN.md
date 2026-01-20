@@ -4,7 +4,7 @@
 
 ### 1.1 Go 모듈 초기화
 
-- [ ] `go mod init` 실행
+- [x] `go mod init` 실행
 - [ ] 프로젝트 디렉토리 구조 설계
 
 ```text
