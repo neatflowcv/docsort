@@ -74,17 +74,66 @@ github.com/knadh/koanf
 | 모듈화된 설계 | |
 | 필요한 기능만 선택 가능 | |
 
-### Option C: yaml.v3 직접 사용
+### Option C: yaml.v3 직접 사용 ⚠️ ARCHIVED
 ```
 gopkg.in/yaml.v3
 ```
 | 장점 | 단점 |
 |------|------|
-| 최소 의존성 | 환경변수 바인딩 직접 구현 |
-| 완전한 제어 | 보일러플레이트 많음 |
-| 가장 가벼움 | |
+| 최소 의존성 | **프로젝트 archived, 유지보수 중단** |
+| 완전한 제어 | 환경변수 바인딩 직접 구현 |
+| | 보일러플레이트 많음 |
 
-**권장: koanf 또는 yaml.v3** - 프로젝트 규모에 비해 viper는 과함
+---
+
+## 2-1. YAML 라이브러리 (상세)
+
+> ⚠️ `gopkg.in/yaml.v3` (go-yaml/yaml)가 archived 됨. 대안 필요.
+
+### Option A: go.yaml.in/yaml/v3
+```
+go.yaml.in/yaml/v3
+```
+| 장점 | 단점 |
+|------|------|
+| yaml.org 공식 관리 포크 | 아직 마이그레이션 진행 중인 생태계 |
+| gopkg.in/yaml.v3와 API 호환 | 일부 프로젝트에서 타입 충돌 가능 |
+| 기존 코드 마이그레이션 용이 | |
+| 버그 수정 포함 | |
+| 안정적인 변경 (과격한 변경 없음) | |
+
+### Option B: goccy/go-yaml ✅ 선택
+```
+github.com/goccy/go-yaml
+```
+| 장점 | 단점 |
+|------|------|
+| **릴리즈 활발, 최신 유지보수** | API가 yaml.v3와 다름 |
+| Go-idiomatic 재구현 | 마이그레이션 코드 수정 필요 |
+| YAML 테스트 스위트 355/402 통과 (yaml.v3는 295) | |
+| 다수 메인테이너, 팀 기반 개발 | |
+| 코드 가독성 좋음 | |
+| 더 정확한 YAML 파싱 | |
+
+### Option C: sigs.k8s.io/yaml
+```
+sigs.k8s.io/yaml
+```
+| 장점 | 단점 |
+|------|------|
+| Kubernetes 생태계 표준 | YAML↔JSON 변환 중심 |
+| go.yaml.in/yaml/v3 기반 | 순수 YAML 용도에는 과함 |
+| 타입 별칭 제공 | |
+
+### YAML 라이브러리 비교
+
+| 라이브러리 | 상태 | API 호환성 | 테스트 통과율 |
+|-----------|------|-----------|--------------|
+| gopkg.in/yaml.v3 | ❌ archived | 기준 | 295/402 |
+| go.yaml.in/yaml/v3 | ✅ 유지보수 | 호환 | 295/402+ |
+| goccy/go-yaml | ✅ 활발 | 비호환 | 355/402 |
+
+**선택: goccy/go-yaml** - 활발한 릴리즈, 최신 유지보수, 더 정확한 파싱
 
 ---
 
@@ -308,7 +357,7 @@ fmt.Printf("\r진행: %d/%d", current, total)
 | 영역 | 라이브러리 | 이유 |
 |------|-----------|------|
 | CLI | **kong** | global 변수 없음, 테스트 용이 |
-| 설정 | **koanf** 또는 **yaml.v3** | 적절한 무게 |
+| 설정/YAML | **goccy/go-yaml** | 활발한 유지보수, 정확한 파싱 |
 | LLM API | **go-openai** | 임베딩 + LLM 통합 |
 | 로컬 임베딩 | **ollama API** | 구현 단순화 |
 | 수학 연산 | **gonum** | 행렬 연산 필수 |
@@ -324,7 +373,7 @@ fmt.Printf("\r진행: %d/%d", current, total)
 // go.mod 예상
 require (
     github.com/alecthomas/kong v0.9.0
-    github.com/knadh/koanf/v2 v2.1.0
+    github.com/goccy/go-yaml v1.15.0
     github.com/sashabaranov/go-openai v1.24.0
     gonum.org/v1/gonum v0.15.0
     github.com/schollz/progressbar/v3 v3.14.0
@@ -340,7 +389,7 @@ require (
 | 영역 | 라이브러리 |
 |------|-----------|
 | CLI | **urfave/cli** |
-| 설정 | **yaml.v3** 직접 |
+| 설정 | **goccy/go-yaml** 직접 |
 | LLM API | **HTTP 직접** |
 | 임베딩 | **OpenAI API만** |
 | 수학 | **직접 구현** |
